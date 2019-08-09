@@ -37,7 +37,8 @@ export class TodoStack extends cdk.Stack {
         
         var api = new apigw.LambdaRestApi(this, "API", {
             handler: getItemFunction,
-            proxy: false
+            proxy: false,
+            endpointTypes: [apigw.EndpointType.REGIONAL]
         });
 
         var itemsResource = api.root.addResource("items");
@@ -45,7 +46,6 @@ export class TodoStack extends cdk.Stack {
         itemsResource.addMethod("PUT", new apigw.LambdaIntegration(putItemFunction));
         this.addCorsOptions(itemsResource);
     }
-
 
     private addCorsOptions(apiResource: apigw.IResource) {
         apiResource.addMethod('OPTIONS', new apigw.MockIntegration({
