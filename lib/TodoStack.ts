@@ -43,5 +43,35 @@ export class TodoStack extends cdk.Stack {
         var itemsResource = api.root.addResource("items");
         itemsResource.addMethod("GET");
         itemsResource.addMethod("PUT", new apigw.LambdaIntegration(putItemFunction));
+        this.addCorsOptions(itemsResource);
+    }
+
+
+    private addCorsOptions(apiResource: apigw.IResource) {
+        apiResource.addMethod('OPTIONS', new apigw.MockIntegration({
+            integrationResponses: [{
+            statusCode: '200',
+            responseParameters: {
+                'method.response.header.Access-Control-Allow-Headers': "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                'method.response.header.Access-Control-Allow-Origin': "'*'",
+                'method.response.header.Access-Control-Allow-Credentials': "'false'",
+                'method.response.header.Access-Control-Allow-Methods': "'OPTIONS,GET,PUT,POST,DELETE'",
+            },
+            }],
+            passthroughBehavior: apigw.PassthroughBehavior.NEVER,
+            requestTemplates: {
+            "application/json": "{\"statusCode\": 200}"
+            },
+        }), {
+            methodResponses: [{
+            statusCode: '200',
+            responseParameters: {
+                'method.response.header.Access-Control-Allow-Headers': true,
+                'method.response.header.Access-Control-Allow-Methods': true,
+                'method.response.header.Access-Control-Allow-Credentials': true,
+                'method.response.header.Access-Control-Allow-Origin': true,
+            },  
+            }]
+        })
     }
 }
