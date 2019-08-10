@@ -3,10 +3,9 @@ import dynamodb = require('@aws-cdk/aws-dynamodb');
 import apigw = require("@aws-cdk/aws-apigateway");
 import lambda = require("@aws-cdk/aws-lambda");
 import path = require("path");
-import s3 = require("@aws-cdk/aws-s3");
-import s3Deploy = require("@aws-cdk/aws-s3-deployment");
 
 export class TodoStack extends cdk.Stack {
+
     constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
@@ -47,17 +46,6 @@ export class TodoStack extends cdk.Stack {
         itemsResource.addMethod("GET");
         itemsResource.addMethod("PUT", new apigw.LambdaIntegration(putItemFunction));
         this.addCorsOptions(itemsResource);
-
-        //deploy frontend
-        var websiteBucket = new s3.Bucket(this, "jan-cdk-frontend", {
-            websiteIndexDocument: "index.html",
-            publicReadAccess: true
-        });
-
-        new s3Deploy.BucketDeployment(this, "FrontendDeployment", {
-            source: s3Deploy.Source.asset(path.join(__dirname, "../app/frontend/build")),
-            destinationBucket: websiteBucket
-        });
     }
 
     private addCorsOptions(apiResource: apigw.IResource) {
