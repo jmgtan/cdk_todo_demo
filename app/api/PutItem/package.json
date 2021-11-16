@@ -2,7 +2,7 @@
     "name": "todo-put-item",
     "version": "0.0.1",
     "dependencies": {
-        "aws-sdk": "^2.505.0",
+        "aws-sdk": "^2.814.0",
         "uuid": "^3.3.2"
     }
 }
